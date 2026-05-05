@@ -1,30 +1,30 @@
-const express = require("express");
-const http = require("http");
-const WebSocket = require("ws");
+import {WebSocketServer , WebSocket} from "ws";
 
-const app = express();
+const wss = new WebSocketServer({port: 8080});
 
-const server = http.createServer(app);
+//connection event
+wss.on('connection' ,(socket,request)=>{
+    
+    const ip = request.socket.remoteAddress;
 
-const wss = new WebSocket.Server({ server });
+    socket.on("message" ,(rawData)=>{
+        const message = rawData.toString();
+        console.log({rawData});
 
-app.use(express.static("public"));
+        wss.clients.forEach((client) =>{
+            if (client.readyState === WebSocket.OPEN )
+                client.send(`Server Broadcasting: ${message}`);
+        })
+    });
 
-wss.on("connection", (socket) => {
-  console.log("Client Connected");
+    socket.on('error' ,(err) => {
+        console.error('Error: ${err.message}: ${ip}');
+    })
 
-  socket.send("Welcome Client!");
-
-  socket.on("message", (message) => {
-    console.log("Received:", message.toString());
-    socket.send(`Server Received: ${message}`);
-  });
-
-  socket.on("close", () => {
-    console.log("Client Disconnected");
-  });
+    socket.on('close' ,() => {
+        console.log(`Client ${ip} disconnected`);
+    });
 });
 
-server.listen(3000, () => {
-  console.log("Server running on port 3000");
-});
+
+console.log("WebSocket Server Is Running On ws://localhost:8080");
