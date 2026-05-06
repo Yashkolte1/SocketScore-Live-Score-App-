@@ -2,9 +2,10 @@
   "name": "socketscore",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-     "dev": "nodemon server.js"
+    "dev" : "node --watch src/index.js",
+    "start" : "node src/index.js"
   },
   "repository": {
     "type": "git",
@@ -17,8 +18,5 @@
   "bugs": {
     "url": "https://github.com/Yashkolte1/SocketScore-Live-Score-App-/issues"
   },
-  "homepage": "https://github.com/Yashkolte1/SocketScore-Live-Score-App-#readme",
-  "dependencies": {
-    "ws": "^8.20.0"
-  }
+  "homepage": "https://github.com/Yashkolte1/SocketScore-Live-Score-App-#readme"
 }
