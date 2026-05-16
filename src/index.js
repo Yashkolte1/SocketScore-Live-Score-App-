@@ -2,7 +2,8 @@ import express from 'express';
 import {matchRouter} from './routes/matches.js';
 import http from 'http';
 import { attachWebSocketServer } from './ws/server.js';
-
+import { securityMiddleware } from './arcjet.js';
+import 'dotenv/config';
 
 
 const PORT = Number(process.env.PORT || 8000);
@@ -11,12 +12,14 @@ const HOST =  process.env.HOST || '0.0.0.0';
 const app = express();
 const server = http.createServer(app);
 
+app.use(securityMiddleware());
 
 app.use(express.json());
 
 app.get('/' , (req, res) => {
     res.send('Hello From Server Side!');
 });
+
 
 app.use('/matches' , matchRouter);
 const {broadcastMatchCreated} = attachWebSocketServer(server);
@@ -28,3 +31,4 @@ server.listen(PORT , HOST , () => {
      console.log(`WebSocket Server Is Running On ${baseUrl.replace(/^http/, 'ws')}/ws`);
     
 });
+
