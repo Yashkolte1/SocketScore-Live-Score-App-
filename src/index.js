@@ -4,6 +4,7 @@ import http from 'http';
 import { attachWebSocketServer } from './ws/server.js';
 import { securityMiddleware } from './arcjet.js';
 import 'dotenv/config';
+import { commentaryRouter } from './routes/commentary.js';
 
 
 const PORT = Number(process.env.PORT || 8000);
@@ -20,10 +21,11 @@ app.get('/' , (req, res) => {
     res.send('Hello From Server Side!');
 });
 
-
 app.use('/matches' , matchRouter);
-const {broadcastMatchCreated} = attachWebSocketServer(server);
+app.use('/matches/:id/commentary', commentaryRouter);
+const {broadcastMatchCreated, broadcastCommentary} = attachWebSocketServer(server);
 app.locals.broadcastMatchCreated = broadcastMatchCreated;
+app.locals.broadcastCommentary = broadcastCommentary;
 
 server.listen(PORT , HOST , () => {
     const baseUrl = HOST === '0.0.0.0' ? `http://localhost:${PORT}` : `http://${HOST}:${PORT}`;
